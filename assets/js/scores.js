@@ -1,7 +1,8 @@
+//querySelector variables
 var highScoresEl = document.querySelector("#highscores");
 var clearButton = document.querySelector("#clear")
 
-//get information from local storage
+//getHighScores from local storage
 function getHighScores () {
     var highscores = JSON.parse(localStorage.getItem("highscores"));
     //sort by high score
@@ -21,13 +22,13 @@ function getHighScores () {
     
 }
 
-//clear local storage and highscore list
+//clearScores function - remove from local storage and clear highscore list
 function clearScores () {
     localStorage.clear();
     highScoresEl.classList.add("hide");
 }
 
-//clear board event listener
+//clearScores event listener
 clearButton.addEventListener("click", clearScores);
 
 //show highscores
