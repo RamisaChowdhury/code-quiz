@@ -1,7 +1,34 @@
+var highScoresEl = document.querySelector("#highscores");
+var clearButton = document.querySelector("#clear")
+
 //get information from local storage
+function getHighScores () {
+    var highscores = JSON.parse(localStorage.getItem("highscores"));
+    //sort by high score
+    if (highscores !== null){
+        highscores.sort(function(a, b) {
+            return b.score - a.score;
+        });
+        //list each score
+        for (i = 0; i < highscores.length; i++) {
+            var userList = document.createElement("li");
+            userList.textContent = highscores[i].initials + " - " + highscores[i].score;
+            highScoresEl.appendChild(userList);
+        }
+    } else {
+        highscores = [];
+    }
+    
+}
 
-//sort by high score
+//clear local storage and highscore list
+function clearScores () {
+    localStorage.clear();
+    highScoresEl.classList.add("hide");
+}
 
-//then sort alphabetically
+//clear board event listener
+clearButton.addEventListener("click", clearScores);
 
-//clear high score function - to clear items form local storage
+//show highscores
+getHighScores();

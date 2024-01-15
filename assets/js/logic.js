@@ -39,10 +39,8 @@ function getQuestions() {
     //get and display current question title
     var currentQuestion = questions[currentQuestionNumber];
     questionTitleEl.innerHTML = currentQuestion.title;
-
-    //clear old choices
+    //clear previous choices
     choicesEl.innerHTML = "";
-
     //loop through choices and create button for each option
     var currentChoices = currentQuestion.choices;
         for (i = 0; i < currentChoices.length; i++) {
@@ -71,7 +69,7 @@ function showFeedback(event) {
     // next question
     currentQuestionNumber++;
     
-    // end game if all questions are complete or contine to next question
+    // end game if all questions are complete otherwise contine to next question
     if (currentQuestionNumber !== questions.length) {
         getQuestions();
     } else {
@@ -104,26 +102,29 @@ function startTimer() {
     }
 };
 
-//saveScore to local storage as string on click
+//saveScore to local storage as string on click or enter
 function saveScore(event) {
-    event.preventDefault();
     // userDetails from input
-    var userDetails = initialsEl.value.trim();
-    var userScore ={
+    var userInitials = initialsEl.value.trim();
+    var userScore = {
         score: time,
-        initials: userDetails,
+        initials: userInitials,
     }
-    // save to local storage
-    var highScores = [];
-    highScores.push(userScore);
-    localStorage.setItem("highScores", JSON.stringify(highScores));
+    // get saved scores from local storage
+    var highscores = JSON.parse(localStorage.getItem("highscores"));
+    if (highscores === null) {
+        highscores = [];
+    } 
+    // save new score to local storage
+    highscores.push(userScore);
+    localStorage.setItem("highscores", JSON.stringify(highscores));
     // show highscores page
     window.location.href = "highscores.html";
 }
 
 //saveScore to local storage as string on enter
 function enterScore(event) {
-    if (event.keycode === "Enter") {
+    if (event.key === "Enter") {
         saveScore();
     }
 }
