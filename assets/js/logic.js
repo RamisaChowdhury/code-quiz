@@ -9,13 +9,17 @@ var choicesButton = document.querySelectorAll("button")
 var feedbackEl = document.querySelector("#feedback")
 var endScreenEl = document.querySelector("#end-screen")
 var finalScoreEl = document.querySelector("#final-score")
-var initialsEl = document.
+var initialsEl = document.querySelector("#initials")
+var submitButton = document.querySelector("#submit")
+
 
 //global variables
 var time = 100;
 timeEl.textContent = time;
 var timer;
 var currentQuestionNumber = 0;
+var rightSound = new Audio ("./assets/sfx/correct.wav")
+var wrongSound = new Audio ("./assets/sfx/incorrect.wav")
 
 
 //startQuiz function
@@ -54,25 +58,26 @@ function showFeedback(event) {
     var element = event.target;
     if (element.textContent !== questions[currentQuestionNumber].answer) {
         feedbackEl.textContent = "Wrong!";
+        wrongSound.play();
         time -= 15;
         if (time < 0) {
             time = 0;
         }
     } else {
         feedbackEl.textContent = "Correct!";
+        rightSound.play();
     }
 
     // next question
     currentQuestionNumber++;
     
     // end game if all questions are complete or contine to next question
-    if (currentQuestionNumber === questions.length) {
-        endQuiz();
-    } else {
+    if (currentQuestionNumber !== questions.length) {
         getQuestions();
+    } else {
+        endQuiz();
     }
 }
-
 
 // end quiz
 function endQuiz() {
@@ -84,6 +89,7 @@ function endQuiz() {
     // unihide endScreenEl
     endScreenEl.classList.remove("hide");
     // show final-score
+    timeEl.textContent = time;
     finalScoreEl.textContent = time;
 }
 
@@ -98,20 +104,32 @@ function startTimer() {
     }
 };
 
-//function to save highscore to local storage
-
-//listen for submit
-//prevent default for input
-//var userDetails = 
-//localSotra.setItem("userDetails", JSON stringify(userDetails));
-
-
-function saveScore() {
-
+//saveScore to local storage as string on click
+function saveScore(event) {
+    event.preventDefault();
+    // userDetails from input
+    var userDetails = initialsEl.value.trim();
+    var userScore ={
+        score: time,
+        initials: userDetails,
+    }
+    // save to local storage
+    var highScores = [];
+    highScores.push(userScore);
+    localStorage.setItem("highScores", JSON.stringify(highScores));
+    // show highscores page
+    window.location.href = "highscores.html";
 }
 
-//function to store data when user hits enter
+//saveScore to local storage as string on enter
+function enterScore(event) {
+    if (event.keycode === "Enter") {
+        saveScore();
+    }
+}
 
 //eventListeners
 startQuizButton.addEventListener("click", startQuiz);
 choicesEl.addEventListener("click", showFeedback);
+submitButton.addEventListener("click", saveScore);
+initialsEl.addEventListener("keydown", enterScore);
